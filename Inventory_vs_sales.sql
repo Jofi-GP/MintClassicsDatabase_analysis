@@ -77,13 +77,13 @@ GROUP BY p.productCode, p.productName, p.quantityInStock, w.warehouseName
 ORDER BY COALESCE(SUM(od.quantityOrdered * od.priceEach), 0) ASC;
 
 -- As imagined, unit prices have to do with total revenues, and they are not quite reflected in total sales by volume.
--- total sales (number of orders) is irrelevant for decison making on that matter.
+-- total sales (number of orders) is irrelevant for decison-making.
 -- It would be a mistake to discard products based on volume of sales only, both variables should be taken into consideration.
 
 -- Compare the 5 most and least-sold items (unit volume) and their revenues. 
--- This is a complicated analysis but very informative for deciding on which items to be eliminated from inventory
--- by having an idea of what itemized sales success looks like (in volume and revenue).
--- I created two tables, LEAST SOLD and MOST SOLD, each with its own sales raking based on quantityOrdered, and then UNION ALL them.
+-- Having an idea of what itemized sales success looks like (in volume and revenue) can help deciding on which items to be eliminated from inventory.
+
+-- In one approach, I created two tables, LEAST SOLD and MOST SOLD, each with its own sales raking based on quantityOrdered, and then UNION ALL them.
 -- I made sure the ranking is sort by unit volume by limiting to 5 before the union, and by forcing ORDER BY total_units_sold
 (
     SELECT 
@@ -125,4 +125,39 @@ UNION ALL
     LIMIT 5
 )
 ORDER BY sales_rank DESC, total_units_sold DESC;
+
+-- UNION operations can be heavy to process. Alternatively, we can define a CTE + windows function to create the two ranks, then case select the top and lowest for 
+-- the result visualization
+
+with aggregated_sales as (
+	select
+		w.warehouseName,
+        p.productCode,
+        p.productName, 
+        p.productLine,
+		COALESCE(CAST(MIN(od.priceEach) AS CHAR), 'NaN') AS lowest_price_sold,
+		COALESCE(CAST(MAX(od.priceEach) AS CHAR), 'NaN') AS highest_price_sold,
+        COALESCE(SUM(od.quantityOrdered), 0) AS total_units_sold,
+        p.quantityInStock AS in_stock_units,
+        COALESCE(SUM(od.quantityOrdered * od.priceEach), 0) AS raw_revenue,
+        row_number()over (order by coalesce(sum(od.quantityOrdered),0) desc) as rank_most,
+        row_number()over (order by coalesce(sum(od.quantityOrdered),0) asc) as rank_least
+    FROM products p 
+    LEFT JOIN orderdetails od ON p.productCode = od.productCode
+    LEFT JOIN warehouses w ON p.warehouseCode = w.warehouseCode
+    GROUP BY w.warehouseName, p.productCode, p.productName, p.productLine, p.quantityInStock
+)
+select
+	case
+		when rank_most <= 5 then 'most sold'
+		else 'least sold'
+	end as sales_rank,
+	warehouseName,
+    productCode,
+    productName, 
+    productLine,
+    FORMAT(raw_revenue, 2) as total_revenue
+from aggregated_sales
+where rank_most <= 5 or rank_least <= 5
+order by sales_rank desc, total_units_sold desc;
 
