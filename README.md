@@ -3,7 +3,9 @@ The capstone project for Coursera's 10-series specialization course on SQL for D
 
 Mint Classics Model Cars holds a vast collection of vintage and classic model cars as well as other small-scale vehicles in a worldwide distribution system. Their goal is to close one of its warehouses and discard low performing models while maintaining shipping efficiency and customer satisfaction.
 
-## MySQL scripts  
+## SQL scripts  
+Note: this repository was originally made for MySQL Workbench 8.0, but will also function in MySQL 26.0 and other compatible software.
+
 File's details and organization:
   1.	Mintclassics Data cleared: critical step to ensure correct formatting of dates, identifying missing information and updating tables if necessary from the original mintclassics database.
   2.	Background analysis: obtained the overall business organization (regional sales and price gaps, customers demographics and active accounts, flagged customers)
