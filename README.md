@@ -1,14 +1,14 @@
 # Mint Classics Model Cars Case
-The capstone project for Coursera's 10-series specialization course on SQL for Data Analysis and Business Insights.
+Capstone project for Coursera's 10-series specialization course on SQL for Data Analysis and Business Insights.
 
-Mint Classics Model Cars holds a vast collection of vintage and classic model cars as well as other small-scale vehicles in a worldwide distribution system. Their goal is to close one of its warehouses and discard low performing models while maintaining shipping efficiency and customer satisfaction.
+Mint Classics LLC holds a vast collection of vintage and classic model cars as well as other small-scale vehicles in a worldwide distribution system. Their goal is to close one of its warehouses and discard low performing models while maintaining shipping efficiency and customer satisfaction.
 
 ## SQL scripts  
 Note: this repository was originally made for MySQL Workbench 8.0, but will also function in MySQL 26.0 and other compatible software.
 
-File's details and organization:
-  1.	Mintclassics Data cleared: critical step to ensure correct formatting of dates, identifying missing information and updating tables if necessary from the original mintclassics database.
-  2.	Background analysis: obtained the overall business organization (regional sales and price gaps, customers demographics and active accounts, flagged customers)
+### File's details and organization:
+  1.	Mintclassics Data cleared: critical step to ensure database consistency. Normalization of date formats, identifying missing information, and updating tables if necessary.
+  2.	Background analysis: screenshot of the overall business organization (regional sales and price gaps, customers demographics and active accounts, flagged customers)
   3.	Cancellations and customer satisfaction: comments on orders table could help in determining warehouse connections to cancellations and disputes
   4.	Delivery performance: found out the average days to ship per country or region and map the warehouse-to-region shipping.
   5.	Inventory vs sales: calculated the most and least sold items, the average revenue per unit and the total revenue of each product line.
